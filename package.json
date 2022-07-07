@@ -1,6 +1,6 @@
 {
   "name": "jovo-v4-community-plugin-jexl-output",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A Jovo V4 framework plugin which adds Jexl support for output strings.",
   "main": "dist/src/index.js",
   "types": "dist/src/index.d.ts",
