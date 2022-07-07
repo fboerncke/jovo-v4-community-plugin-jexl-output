@@ -34,7 +34,7 @@ You have access to the Jovo environment (details further below):
 
 - Access the Jovo session: `"${$session.isNew ? 'Welcome stranger! ' : 'So here we launch again: '}"`
 
-- Access device specific information `"${ 'SCREEN' in jovoDevice.capabilities ? 'Your device seems to have a screen.' : 'Your device does not have a screen'}"`,
+- Access device specific information `"${ 'SCREEN' in $device.capabilities ? 'Your device seems to have a screen.' : 'Your device does not have a screen'}"`,
 
 - You also have access to the request object: `"You seem to be located somewhere near ${$request.timeZone}"`
 
@@ -42,7 +42,7 @@ You have access to the Jovo environment (details further below):
 
 And there is more:
 
-- Use the power of the [Voca](https://vocajs.com/) string library: `"Your utterance read backwards sounds like this: ${Voca.reverse($input.text}"`
+- Use the power of the [Voca](https://vocajs.com/) string library: `"Your utterance read backwards sounds like this: ${Voca.reverse($input.text)}"`
 
 ## List of supported libraries and environment variables
 
