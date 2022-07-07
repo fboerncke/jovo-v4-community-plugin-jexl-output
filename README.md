@@ -73,14 +73,14 @@ If you maintain your strings via a **Voice CMS** you may even be able to change 
 
 Install the plugin into your Jovo project:
 
-`npm install @jovo-community/plugin-jexl-output --save`
+`npm install jovo-v4-community-plugin-jexl-output --save`
 
 Register the plugin in:
 
 app.js:
 
 ```javascript
-const { JexlOutputPlugin } = require("@jovo-community/plugin-jexl-output");
+const { JexlOutputPlugin } = require("jovo-v4-community-plugin-jexl-output");
 
 app.use(
   // ... base imports
@@ -91,7 +91,7 @@ app.use(
 app.ts:
 
 ```typescript
-import { JexlOutputPlugin } from "@jovo-community/plugin-jexl-output";
+import { JexlOutputPlugin } from "jovo-v4-community-plugin-jexl-output";
 app.use(
   // ... base imports
   new JexlOutputPlugin()
@@ -100,7 +100,9 @@ app.use(
 
 ## How to start
 
-Replace your whatever `WELCOME_MESSAGE` with something like `"Your magic number today is ${Math.round(Math.random()*6)+1}"`.
+Replace your whatever `WELCOME_MESSAGE` with something like:
+
+ `"Your magic number today is ${Math.round(Math.random()*6)+1}"`.
 
 Now launch your voice app/skill/action multiple times.
 
