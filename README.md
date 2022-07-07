@@ -1,14 +1,12 @@
 # Jexl Output Plugin for Jovo V4
 
-<!--
-[![NPM](https://nodei.co/npm/jovo-v4-community-plugin-spintax-output.png)](https://nodei.co/npm/jovo-v4-community-plugin-spintax-output/)
--->
+[![NPM](https://nodei.co/npm/jovo-v4-community-plugin-jexl-output.png)](https://nodei.co/npm/jovo-v4-community-plugin-jexl-output/)
 
 ## Overview
 
 This plugin for the [Jovo V4 Framework](https://github.com/jovotech/jovo-framework) allows you to use **Jexl** expressions within your output strings.
 
-*What is Jexl* you ask? [Jexl](https://github.com/TomFrost/Jexl) describes itself as "*Javascript Expression Language: Powerful context-based expression parser and evaluator*".
+_What is Jexl_ you ask? [Jexl](https://github.com/TomFrost/Jexl) describes itself as "_Javascript Expression Language: Powerful context-based expression parser and evaluator_".
 
 To start with a very basic example: Jexl expressions within strings look like `"${1+1}"`. This would be evaluated to a string looking like `"2"`. This looks trivial but when you learn that you can access the Jovo context using variables while support for libraries with Math expressions and [Voca](https://vocajs.com/) is included out of the box you might understand that soon you can do a lot more.
 
@@ -82,7 +80,7 @@ Register the plugin in:
 app.js:
 
 ```javascript
-const { JexlOutputPlugin } = require('@jovo-community/plugin-jexl-output');
+const { JexlOutputPlugin } = require("@jovo-community/plugin-jexl-output");
 
 app.use(
   // ... base imports
@@ -93,7 +91,7 @@ app.use(
 app.ts:
 
 ```typescript
-import { JexlOutputPlugin } from '@jovo-community/plugin-jexl-output';
+import { JexlOutputPlugin } from "@jovo-community/plugin-jexl-output";
 app.use(
   // ... base imports
   new JexlOutputPlugin()
