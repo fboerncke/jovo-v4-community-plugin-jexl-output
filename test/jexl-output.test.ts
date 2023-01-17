@@ -175,3 +175,65 @@ test("test whitespace", () => {
   expect(jovo.$output[0].reprompt).toBe(" ");
   expect(jovo.$output[1].reprompt).toBe(" ");
 });
+
+test("test join 01", () => {
+  const jovo = {
+    $output: [{ message: '${join([],", "," und ")}' }],
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(jovo as Jovo);
+  expect(jovo.$output[0].message).toBe("");
+});
+
+test("test join 02", () => {
+  const jovo = {
+    $output: [{ message: '${join(["ALPHA"],", "," und ")}' }],
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(jovo as Jovo);
+  expect(jovo.$output[0].message).toBe("ALPHA");
+});
+
+test("test join 03", () => {
+  const jovo = {
+    $output: [{ message: '${join(["ALPHA","BETA"],", "," und ")}' }],
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(jovo as Jovo);
+  expect(jovo.$output[0].message).toBe("ALPHA und BETA");
+});
+
+test("test join 04", () => {
+  const jovo = {
+    $output: [{ message: '${join(["ALPHA","BETA","GAMMA"],", "," und ")}' }],
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(jovo as Jovo);
+  expect(jovo.$output[0].message).toBe("ALPHA, BETA und GAMMA");
+});
+
+test("test join 05", () => {
+  const jovo = {
+    $output: [{ message: '${join(["ALPHA","BETA","GAMMA"],", ")}' }],
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(jovo as Jovo);
+  expect(jovo.$output[0].message).toBe("ALPHA, BETA, GAMMA");
+});
+
+test("test join 06", () => {
+  const jovo = {
+    $output: [{ message: '${join(["ALPHA","BETA","GAMMA"])}' }],
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(jovo as Jovo);
+  expect(jovo.$output[0].message).toBe("ALPHA,BETA,GAMMA");
+});
+
+test("test join 07", () => {
+  const jovo = {
+    $output: [
+      {
+        message: '${join(["ALPHA","BETA","GAMMA"])}',
+        reprompt: '${join(["ALPHA","BETA","GAMMA"])}',
+      },
+    ],
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(jovo as Jovo);
+  expect(jovo.$output[0].message).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].reprompt).toBe("ALPHA,BETA,GAMMA");
+});

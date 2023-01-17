@@ -1,5 +1,5 @@
-import JEXL from "jexl";
-import Voca from "voca";
+import JEXL from 'jexl';
+import Voca from 'voca';
 
 /**
  * Starting with a text string which contains "Jexl" expressions (described in
@@ -28,6 +28,30 @@ export function processJexlExpression(text: string, jexlContext: any): string {
   Object.getOwnPropertyNames(Voca).forEach((functionName) => {
     // @ts-ignore
     JEXL.addFunction(functionName, Voca[functionName as keyof typeof Voca]);
+  });
+
+  JEXL.addFunction('join', (array: string[], joinString: string, lastJoinString: string) => {
+    const length = array.length;
+
+    if (joinString === undefined) {
+      joinString = ',';
+    }
+    if (lastJoinString === undefined) {
+      lastJoinString = joinString;
+    }
+
+    if (length === 0) {
+      return '';
+    } else if (length === 1) {
+      return array[0];
+    } else if (length === 2) {
+      return array.join(lastJoinString);
+    } else {
+      // length >= 3
+      const allButLast = array.slice(0, length - 1);
+      const lastElement = array[length - 1];
+      return allButLast.join(joinString) + lastJoinString + lastElement;
+    }
   });
 
   let newText = text;
