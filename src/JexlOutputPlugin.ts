@@ -6,7 +6,10 @@ import {
   Extensible,
   InvalidParentError,
   MessageValue,
+  QuickReplyValue,
 } from "@jovotech/framework";
+
+import * as _ from "lodash";
 
 import { processJexlExpression } from "./JexlOutputProcessor";
 
@@ -74,6 +77,35 @@ export class JexlOutputPlugin extends Plugin {
           );
         }
       }
+
+      if ("quickReplies" in entry) {
+        const regEx = new RegExp(/^\${(.+?)}$/);
+        if (
+          regEx.test(entry.quickReplies as unknown as string) &&
+          entry.quickReplies !== undefined &&
+          entry.quickReplies.length > 0
+        ) {
+          // something like "${some.path.notation.and.nothing.around}"
+          const expression = entry.quickReplies[0] as unknown as string;
+          const keypath = expression.slice(2, expression.length - 1); // ${a.b.c} ==> a.b.c
+
+          const result = _.get(jovo, keypath);
+          entry.quickReplies = result;
+        }
+
+        if (Array.isArray(entry.quickReplies)) {
+          let quickRepliesArray = entry.quickReplies;
+          quickRepliesArray = quickRepliesArray.map(
+            (message: QuickReplyValue): QuickReplyValue => {
+              return this.processQuickReplyValueIncludingJexl(
+                message,
+                jexlContext
+              );
+            }
+          );
+          entry.quickReplies = quickRepliesArray;
+        }
+      }
     });
   }
 
@@ -107,6 +139,22 @@ export class JexlOutputPlugin extends Plugin {
       }
     }
     return outputElementIncludingJexl;
+  }
+
+  /**
+   *
+   * @param quickReplyValueIncludingJexl may be a string or an object like {text: string, speech: string} but no Array
+   * @returns
+   */
+  processQuickReplyValueIncludingJexl(
+    quickReplyValueIncludingJexl: QuickReplyValue,
+    jexlContext: any
+  ): QuickReplyValue {
+    quickReplyValueIncludingJexl = processJexlExpression(
+      quickReplyValueIncludingJexl as string,
+      jexlContext
+    );
+    return quickReplyValueIncludingJexl;
   }
 
   getDefaultConfig(): PluginConfig {
