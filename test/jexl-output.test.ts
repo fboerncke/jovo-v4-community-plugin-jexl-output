@@ -237,3 +237,159 @@ test("test join 07", () => {
   expect(jovo.$output[0].message).toBe("ALPHA,BETA,GAMMA");
   expect(jovo.$output[0].reprompt).toBe("ALPHA,BETA,GAMMA");
 });
+
+test("test join 08 string instead of string[]", () => {
+  const jovo = {
+    $output: [
+      {
+        message: "${join($session.someStringValue)}",
+      },
+    ],
+    $session: { someStringValue: "this is a string" },
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(
+    jovo as unknown as Jovo
+  );
+  // invalid input leads to empty output
+  expect(jovo.$output[0].message).toBe("");
+});
+
+test("test join 09 undefined instead of string[]", () => {
+  const jovo = {
+    $output: [
+      {
+        message: "${join($session.someStringValue)}",
+      },
+    ],
+    $session: { someStringValue: undefined },
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(
+    jovo as unknown as Jovo
+  );
+  // invalid input leads to empty output
+  expect(jovo.$output[0].message).toBe("");
+});
+
+test("test quick replies 01", () => {
+  const jovo = {
+    $output: [
+      {
+        message: '${join(["ALPHA","BETA","GAMMA"])}',
+        reprompt: '${join(["ALPHA","BETA","GAMMA"])}',
+        quickReplies: ["ALPHA", "BETA", "GAMMA", "${1+1}"],
+      },
+    ],
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(jovo as Jovo);
+  expect(jovo.$output[0].message).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].reprompt).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].quickReplies).toStrictEqual([
+    "ALPHA",
+    "BETA",
+    "GAMMA",
+    "2",
+  ]);
+});
+
+test("test quick replies 02", () => {
+  const jovo = {
+    $output: [
+      {
+        message: '${join(["ALPHA","BETA","GAMMA"])}',
+        reprompt: '${join(["ALPHA","BETA","GAMMA"])}',
+        quickReplies: ["ALPHA", "BETA", "GAMMA", "${$session.someValue}"],
+      },
+    ],
+    $session: { someValue: "42" },
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(
+    jovo as unknown as Jovo
+  );
+  expect(jovo.$output[0].message).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].reprompt).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].quickReplies).toStrictEqual([
+    "ALPHA",
+    "BETA",
+    "GAMMA",
+    "42",
+  ]);
+});
+
+test("test quick replies 03", () => {
+  const jovo = {
+    $output: [
+      {
+        message: '${join(["ALPHA","BETA","GAMMA"])}',
+        reprompt: '${join(["ALPHA","BETA","GAMMA"])}',
+        quickReplies: ["${$session.someOtherValue}"],
+      },
+    ],
+    $session: { someOtherValue: ["ALPHA", "BETA"] },
+  };
+  new JexlOutputPlugin().processJexlExpressionsInOutput(
+    jovo as unknown as Jovo
+  );
+  expect(jovo.$output[0].message).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].reprompt).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].quickReplies).toStrictEqual(["ALPHA", "BETA"]);
+});
+
+test("test quick replies 04", () => {
+  const jovo = {
+    $output: [
+      {
+        message: '${join(["ALPHA","BETA","GAMMA"])}',
+        reprompt: '${join(["ALPHA","BETA","GAMMA"])}',
+        quickReplies: ["${$session.someOtherValue}"],
+      },
+    ],
+    $session: { someOtherValue: ["ALPHA", "BETA"] },
+  };
+  jovo.$session.someOtherValue = ["IOTA", "KAPPA"];
+  new JexlOutputPlugin().processJexlExpressionsInOutput(
+    jovo as unknown as Jovo
+  );
+  expect(jovo.$output[0].message).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].reprompt).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].quickReplies).toStrictEqual(["IOTA", "KAPPA"]);
+});
+
+test("test quick replies 05", () => {
+  const jovo = {
+    $output: [
+      {
+        message: '${join(["ALPHA","BETA","GAMMA"])}',
+        reprompt: '${join(["ALPHA","BETA","GAMMA"])}',
+        quickReplies: ["${$session.someOtherValue}"],
+      },
+    ],
+    $session: { someOtherValue: ["ALPHA", "BETA"] },
+  };
+  jovo.$session.someOtherValue = ["IOTA"];
+  new JexlOutputPlugin().processJexlExpressionsInOutput(
+    jovo as unknown as Jovo
+  );
+  expect(jovo.$output[0].message).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].reprompt).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].quickReplies).toStrictEqual(["IOTA"]);
+});
+
+test("test quick replies 06", () => {
+  const jovo = {
+    $output: [
+      {
+        message: '${join(["ALPHA","BETA","GAMMA"])}',
+        reprompt: '${join(["ALPHA","BETA","GAMMA"])}',
+        quickReplies: ["${$session.someOtherValue}"],
+      },
+    ],
+    $session: { someOtherValue: ["ALPHA", "BETA"] },
+  };
+  jovo.$session.someOtherValue = [];
+  new JexlOutputPlugin().processJexlExpressionsInOutput(
+    jovo as unknown as Jovo
+  );
+  expect(jovo.$output[0].message).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].reprompt).toBe("ALPHA,BETA,GAMMA");
+  expect(jovo.$output[0].quickReplies).toStrictEqual([]);
+});
